@@ -66,17 +66,37 @@ int main(int argc, const char * argv[])
     }
 
     {
-        const int wt = 2;
+        const int wt = 5;
 
         pwmWrite(pin, 0);
         int i = 0;
-        for (i = 0; i < wt + 2; ++i)
+        for (i = 0; i < wt; ++i)
         {
             printf("(0) i = %d\n", i);
             delay(1000);
         }
 
+        {
+            printf("to mid\n");
+            getchar();
+            pwmWrite(pin, 5.5*mul);
+            int i = 0;
+            for (i = 0; i < wt; ++i)
+            {
+                printf("(mid) i = %d\n", i);
+                delay(1000);
+            }
 
+            printf("to zero\n");
+            getchar();
+            pwmWrite(pin, 3.5*mul);
+            for (i = 0; i < wt+ 5; ++i)
+            {
+                printf("(0) i = %d\n", i);
+                delay(1000);
+            }
+            return 0;
+        }
         {
 #if 0
             double r = 0;
