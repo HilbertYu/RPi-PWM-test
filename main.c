@@ -4,6 +4,8 @@
 
 const int pin = 18;
 
+#define PWM_MUL (20*3*8)
+
 void init(void)
 {
     if (wiringPiSetup() < 0)
@@ -17,6 +19,31 @@ void init(void)
         fprintf(stderr, "init fail\n");
         exit(1);
     }
+}
+
+void runFreq(const double r, int loop_times, const char * title, int pause)
+{
+    {
+        double mul = PWM_MUL;
+
+        printf("%s\n", title);
+        if (pause ==  1)
+        {
+            getchar();
+        }
+        pwmWrite(pin, r*mul);
+        int i = 0;
+        for (i = 0; i < loop_times; ++i)
+        {
+            printf("i = %d\n", i);
+            delay(1000);
+        }
+    }
+
+}
+
+void calibrate(void)
+{
 
 }
 
@@ -46,10 +73,10 @@ int main(int argc, const char * argv[])
 
     pwmSetMode(PWM_MODE_MS);
   //  pwmSetMode(PWM_MODE_BAL);
+
+
     //19.2 M = 19200 K
-
-
-    const int mul = 20*3*8;
+    const int mul = PWM_MUL;
 
     const int dc = 1920*2/mul;
     const int rng = 100*mul;
@@ -65,10 +92,16 @@ int main(int argc, const char * argv[])
         printf("!!\n");
     }
 
+    calibrate();
+    return 0;
+
     {
         const int wt = 5;
 
-        pwmWrite(pin, 0);
+        printf("disconect!\n");
+        getchar();
+
+        pwmWrite(pin, 9.9*mul);
         int i = 0;
         for (i = 0; i < wt; ++i)
         {
@@ -76,25 +109,80 @@ int main(int argc, const char * argv[])
             delay(1000);
         }
 
+
         {
-            printf("to mid\n");
-            getchar();
-            pwmWrite(pin, 5.5*mul);
-            int i = 0;
-            for (i = 0; i < wt; ++i)
             {
-                printf("(mid) i = %d\n", i);
-                delay(1000);
+                printf("to mid\n");
+                getchar();
+                pwmWrite(pin, 5.5*mul);
+                int i = 0;
+                for (i = 0; i < wt; ++i)
+                {
+                    printf("(mid) i = %d\n", i);
+                    delay(1000);
+                }
             }
+
+            {
+                printf("to max\n");
+                getchar();
+                pwmWrite(pin, 9.5*mul);
+                int i = 0;
+                for (i = 0; i < 5; ++i)
+                {
+                    printf("(mid) i = %d\n", i);
+                    delay(1000);
+                }
+            }
+            //================
+
 
             printf("to zero\n");
             getchar();
-            pwmWrite(pin, 3.5*mul);
-            for (i = 0; i < wt+ 5; ++i)
+           // pwmWrite(pin, 3.5*mul);
+            pwmWrite(pin, 2.5*mul);
+            for (i = 0; i < 2; ++i)
             {
                 printf("(0) i = %d\n", i);
                 delay(1000);
             }
+
+            printf("to go\n");
+         //   getchar();
+
+            {
+                double i = 4.5 * mul;
+                pwmWrite(pin, i);
+                while (1)
+                {
+
+                    while (i < 10 * mul)
+                    {
+                        printf("i1 = %.2lf, %.2lf\n", i, i/mul);
+                        getchar();
+                        pwmWrite(pin, i);
+                        delay(50);
+                        i += (0.02 * mul);
+                    }
+
+                    while (i > 4 * mul)
+                    {
+                        printf("i2 = %.2lf, %.2lf\n", i, i/mul);
+                        pwmWrite(pin, i);
+                        delay(50);
+                        i -= (0.05 * mul);
+                    }
+                    //delay(10*1000);
+
+                }
+
+            }
+
+            pwmWrite(pin, 5.5*mul);
+
+            printf("to finish\n");
+            getchar();
+            pwmWrite(pin, 0);
             return 0;
         }
         {
