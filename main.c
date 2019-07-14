@@ -27,9 +27,23 @@ int main(int argc, const char * argv[])
     init();
     printf("init - done\n");
 
+    //pinMode(pin, INPUT);
     pinMode(pin, OUTPUT);
+    digitalWrite(pin, 0);
+
+    if (argc > 1)
+    {
+        pinMode(pin, PWM_OUTPUT);
+        pwmWrite(pin, 0);
+        delay(1000);
+        printf("finish!\n");
+        return 0;
+
+    }
 
     pinMode(pin, PWM_OUTPUT);
+
+
     pwmSetMode(PWM_MODE_MS);
   //  pwmSetMode(PWM_MODE_BAL);
     //19.2 M = 19200 K
@@ -43,7 +57,7 @@ int main(int argc, const char * argv[])
     pwmSetClock(dc);
     pwmSetRange(rng);
 
-    const double C = 1920*1000;
+    const double C = 19.20*1000*1000;
     printf("pwm c = %.2lf Hz\n", (double)C/(dc*rng));
 
     if (1920*2 % mul != 0)
@@ -62,14 +76,59 @@ int main(int argc, const char * argv[])
             delay(1000);
         }
 
+
+        {
+#if 0
+            double r = 0;
+            for (; r < 45; r += 1)
+            {
+            //    printf("(3) i = %d\n", i);
+                //pwmWrite(pin, 3*mul);
+             //   r += 0.05;
+                printf("r(%.2lf, %.2lf)\n", r*mul, r);
+                pwmWrite(pin, (r)*mul);
+
+                delay(100);
+            }
+
+            for (; r > 1; r -= 1)
+            {
+             //   printf("(3) i = %d\n", i);
+                //pwmWrite(pin, 3*mul);
+             //   r += 0.05;
+                printf("r(%.2lf, %.2lf)\n", r*mul, r);
+                pwmWrite(pin, (r)*mul);
+
+                delay(100);
+            }
+#endif
         pwmWrite(pin, 3*mul);
 
-        for (i = 0; i < wt; ++i)
+#if 1
+            for (i = 0; i < wt+10; ++i)
+            {
+                printf("(3) i = %d\n", i);
+                //pwmWrite(pin, 3*mul);
+                /* r += 0.05; */
+                /* printf("r(%.2lf, %.2lf)\n", r*mul, r); */
+                pwmWrite(pin, 3*mul);
+
+                delay(1000);
+            }
+#endif
+        }
+
+        pwmWrite(pin, 0);
+        i = 0;
+        for (i = 0; i < wt + 2; ++i)
         {
-            printf("(3) i = %d\n", i);
+            printf("(0) i = %d\n", i);
             delay(1000);
         }
+
     }
+
+//    return 0;
 
     while (1)
     {
