@@ -63,13 +63,29 @@ void calibrate(void)
 
         while(1)
         {
-            printf("s = %.2lf\n", s);
 
+            printf("s = %.2lf\n", s);
             pwmWrite(pin, s*PWM_MUL);
-            s += 0.05;
+            //s += 0.05;
+            s += 0.025*2;
 
             int q = getchar();
+ //           getchar();
+
+//            int q = 0;
+
+
             printf("c = %c\n", q);
+
+            if (q == 'x')
+            {
+                printf("V\n");
+                s -= 0.075*2;
+
+            }
+
+
+
         }
 
     }
