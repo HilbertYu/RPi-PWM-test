@@ -26,7 +26,7 @@ void runFreq(const double r, int loop_times, const char * title, int pause)
     {
         double mul = PWM_MUL;
 
-        printf("%s\n", title);
+        printf("=== %s ===(%.2lf)\n", title, r);
         if (pause ==  1)
         {
             getchar();
@@ -40,11 +40,43 @@ void runFreq(const double r, int loop_times, const char * title, int pause)
         }
     }
 
+    printf("\n");
 }
 
 void calibrate(void)
 {
+    runFreq(0, 3, "zero", 0);
 
+    printf("discon !\n");
+    getchar();
+
+    //pwmWrite(pin, 9.9*PWM_MUL);
+    pwmWrite(pin, 10*PWM_MUL);
+    printf("connect (cali-max)!\n");
+    getchar();
+
+    /* runFreq(3.5, 1, "cali-arm start", 0); */
+    runFreq(5, 5, "cali-min", 0);
+
+    {
+        double s = 5;
+
+        while(1)
+        {
+            printf("s = %.2lf\n", s);
+
+            pwmWrite(pin, s*PWM_MUL);
+            s += 0.05;
+
+            int q = getchar();
+            printf("c = %c\n", q);
+        }
+
+    }
+
+    printf("to end\n");
+    getchar();
+    runFreq(0, 3, "zero", 0);
 }
 
 
